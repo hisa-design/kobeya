@@ -30,11 +30,12 @@ function showLatestData(data) {
   const card = document.createElement("div");
   card.className = "diary-card";
 
-  card.innerHTML = `
-    <div class="diary-date">${latestEntry.date}</div>
-    <img src="img/${latestEntry.photo}" class="diary-photo" alt="">
-    <div class="diary-memo">${latestEntry.memo}</div>
-  `;
+ card.innerHTML = `
+  <div class="diary-date">${latestEntry.yearmonth || latestEntry.date}</div>
+  <img src="/kobeya/img/${latestEntry.photo}" class="diary-photo" alt="">
+  <div class="diary-memo">${latestEntry.memo}</div>
+`;
+
 
   diarySection.appendChild(card);
 }
