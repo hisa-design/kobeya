@@ -36,6 +36,7 @@ function showLatestData(data) {
   <div class="diary-memo">${latestEntry.memo}</div>
 `;
 
+console.log("最新データ中身:", latestEntry);
 
   diarySection.appendChild(card);
 }
