@@ -1,35 +1,33 @@
 window.addEventListener('DOMContentLoaded', () => {
-  const diarySection = document.getElementById('diary-section');
+  console.log("DOMContentLoaded発火！");
+
+  const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6Y1jDNPjIor_oECj5OXCIVSXXAFGrM8x8u7jTfFZaq3hBAt5RyUNffSbpfj-jzD0Yzv1gtm2dmchc/pub?output=csv';
 
   fetch(csvUrl)
     .then(response => response.text())
-    .then(csvText => {
-      const rows = csvText.trim().split('\n');
-      const headers = rows[0].split(',');
+    .then(text => {
+      const rows = text.trim().split("\n").map(row => row.split(","));
+      console.log(rows); // 確認用
 
-      // 一番最後のデータ（最新）
-      const latestRow = rows[rows.length - 1].split(',');
+      const diarySection = document.getElementById("diary-section");
 
-      // データをオブジェクト化（列名をキーに）
-      const latestEntry = {};
-      headers.forEach((header, i) => {
-        latestEntry[header] = latestRow[i];
-      });
+      // ヘッダー行を除いて、データ行だけループ
+      for (let i = 1; i < rows.length; i++) {
+        const [yearmonth, date, memo, photo] = rows[i];
 
-      // カード作成
-      const card = document.createElement('div');
-      card.className = 'diary-card';
+        const card = document.createElement("div");
+        card.className = "diary-card";
 
-      card.innerHTML = `
-        <div class="diary-date">${latestEntry.yearmonth || latestEntry.date || '日付なし'}</div>
-        <img src="/kobeya/img/${latestEntry.photo}" class="diary-photo" alt="写真">
-        <div class="diary-memo">${latestEntry.memo || 'メモなし'}</div>
-      `;
+        card.innerHTML = `
+          <div class="diary-date">${yearmonth} / ${date}</div>
+          <img src="img/${photo}" class="diary-photo" alt="">
+          <div class="diary-memo">${memo}</div>
+        `;
 
-      diarySection.appendChild(card);
+        diarySection.appendChild(card);
+      }
     })
-    .catch(err => {
-      console.error('CSV読み込みでエラー:', err);
-      diarySection.textContent = 'データの読み込みに失敗しました。';
+    .catch(error => {
+      console.error('読み込みエラー:', error);
     });
 });
