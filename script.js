@@ -1,38 +1,35 @@
-window.addEventListener('DOMContentLoaded', function() {
-  console.log("DOMContentLoaded発火！");
+window.addEventListener('DOMContentLoaded', () => {
+  const diarySection = document.getElementById('diary-section');
 
-  Tabletop.init({
-    key: '1VvJ1ySSarudBRJjvsROCY2TelcoTDZ89VO02ZUC4Nqk',
-    callback: function(data, tabletop) {
-      console.log("callback発火！ 取得したデータ：", data);
+  fetch(csvUrl)
+    .then(response => response.text())
+    .then(csvText => {
+      const rows = csvText.trim().split('\n');
+      const headers = rows[0].split(',');
 
-      if (!data || data.length === 0) {
-        console.warn("データが空です");
-        return;
-      }
+      // 一番最後のデータ（最新）
+      const latestRow = rows[rows.length - 1].split(',');
 
-      showLatestData(data);
-    },
-    simpleSheet: true
-  });
+      // データをオブジェクト化（列名をキーに）
+      const latestEntry = {};
+      headers.forEach((header, i) => {
+        latestEntry[header] = latestRow[i];
+      });
 
-  function showLatestData(data) {
-    console.log("データを表示するよ！", data);
+      // カード作成
+      const card = document.createElement('div');
+      card.className = 'diary-card';
 
-    const latestEntry = data[data.length - 1];
-    console.log("最新データ中身:", latestEntry);
+      card.innerHTML = `
+        <div class="diary-date">${latestEntry.yearmonth || latestEntry.date || '日付なし'}</div>
+        <img src="/kobeya/img/${latestEntry.photo}" class="diary-photo" alt="写真">
+        <div class="diary-memo">${latestEntry.memo || 'メモなし'}</div>
+      `;
 
-    const diarySection = document.getElementById("diary-section");
-
-    const card = document.createElement("div");
-    card.className = "diary-card";
-
-    card.innerHTML = `
-      <div class="diary-date">${latestEntry.yearmonth || latestEntry.date || '日付なし'}</div>
-      <img src="/kobeya/img/${latestEntry.photo}" class="diary-photo" alt="">
-      <div class="diary-memo">${latestEntry.memo || 'メモなし'}</div>
-    `;
-
-    diarySection.appendChild(card);
-  }
+      diarySection.appendChild(card);
+    })
+    .catch(err => {
+      console.error('CSV読み込みでエラー:', err);
+      diarySection.textContent = 'データの読み込みに失敗しました。';
+    });
 });
