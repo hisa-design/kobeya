@@ -1,6 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
   console.log("DOMContentLoaded発火！");
 
+  // ここで定義しないとダメ！
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6Y1jDNPjIor_oECj5OXCIVSXXAFGrM8x8u7jTfFZaq3hBAt5RyUNffSbpfj-jzD0Yzv1gtm2dmchc/pub?output=csv';
 
   fetch(csvUrl)
