@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         card.innerHTML = `
           <div class="diary-date">${yearmonth} / ${date}</div>
-          <img src="${photo}" class="diary-photo" alt="">
+          <img src="img/${photo}" class="diary-photo" alt="">
           <div class="diary-memo">${memo}</div>
         `;
 
